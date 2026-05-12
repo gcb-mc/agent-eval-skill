@@ -28,19 +28,21 @@ After:  SDK evaluate() → 7 evaluators × 36 rows in two batches → structured
 
 ### Talking Points
 
-Walk through the notebooks briefly (don't run them — just show structure):
+Walk through the evolution briefly (notebooks v1–v3 have been retired; describe the progression verbally):
 
-| Version | Notebook | What It Added |
-|---------|----------|---------------|
-| **v1** | `test_my_agents.ipynb` | Basic agent routing, custom `score_answer()` via `chat.completions.create`, per-agent checks |
-| **v2** | `test_my_agents_v2.ipynb` | Per-agent pipeline (Summarize → Clarify → Report), dashboard with charts, CSV export |
-| **v3** | `test_my_agents_v3.ipynb` | **Azure AI Evaluation SDK** individual evaluators (Groundedness, Relevance, Coherence, Fluency), edge cases (prompt injection, ambiguity, multilingual) |
-| **v4** | `test_my_agents_v4.ipynb` | **Batch `evaluate()`** with 7 evaluators, two-phase approach, pre-computed JSONL, agentic evaluators |
+| Version | What It Added |
+|---------|---------------|
+| **v1** | Basic agent routing, custom `score_answer()` via `chat.completions.create`, per-agent checks |
+| **v2** | Per-agent pipeline (Summarize → Clarify → Report), dashboard with charts, CSV export |
+| **v3** | **Azure AI Evaluation SDK** individual evaluators (Groundedness, Relevance, Coherence, Fluency), edge cases (prompt injection, ambiguity, multilingual) |
+| **v4** | **Batch `evaluate()`** with 7 evaluators, two-phase approach, pre-computed JSONL, agentic evaluators |
+
+> **Note:** Only v4 (`notebooks/test_my_agents_v4.ipynb`) is in the repo. Legacy notebooks were consolidated into v4.
 
 ### Demo Action (1 min)
 
-- Open each notebook tab briefly, show the markdown headers to illustrate the progression
-- Land on v4 and stay there for the live demo
+- Open v4 and walk through the markdown headers to illustrate what each evolution added
+- Stay on v4 for the live demo
 
 ### Speaker Notes
 
@@ -122,13 +124,13 @@ Phase 2: evaluate(data=JSONL) → scores      (fast, deterministic, retryable)
 
 ```
 Batch 1: Quality (Groundedness, Relevance, Coherence, Fluency)    → run
-         ↓ 30-second cooldown
+         ↓ 60-second cooldown
 Batch 2: Agentic (TaskAdherence, IntentResolution, ResponseCompleteness) → run
 ```
 
 - 4 evaluators × 36 rows is manageable for rate limits
 - 7 × 36 simultaneously = 429 storm
-- Simple `time.sleep(30)` between batches solves it
+- Simple `time.sleep(60)` between batches solves it
 
 #### 3. The 7 Evaluators Explained
 
@@ -171,7 +173,7 @@ Batch 2: Agentic (TaskAdherence, IntentResolution, ResponseCompleteness) → run
 
 > "4 evaluators × 36 rows works. 7 × 36 = instant 429 storm."
 
-**Fix:** Split evaluators into batches with a 30s cooldown. The SDK doesn't manage this for you — you need to do it yourself.
+**Fix:** Split evaluators into batches with a 60s cooldown. The SDK doesn't manage this for you — you need to do it yourself.
 
 #### 🔥 Gotcha 2: Content Filter vs. Prompt Injection Tests
 
@@ -228,10 +230,10 @@ for attempt in range(3):
 
 | Resource | Link/Location |
 |----------|--------------|
-| This repo | `projects/multi-agent-evaluation` |
+| This repo | `projects/agent-eval-skill` |
 | Azure AI Evaluation SDK docs | https://learn.microsoft.com/azure/ai-studio/how-to/develop/evaluate-sdk |
 | Evaluator list reference | https://learn.microsoft.com/azure/ai-studio/how-to/develop/evaluate-sdk#built-in-evaluators |
-| EVALUATION_GUIDE.md | Detailed per-section explanation of the v2 pipeline |
+| EVALUATION_GUIDE.md | Detailed explanation of the v4 two-phase evaluation pipeline |
 | requirements.txt | Pinned versions for reproducibility |
 
 ### Closing Statement
@@ -250,7 +252,7 @@ for attempt in range(3):
 - [ ] Run cells 0–3 (config, imports, preview, **Phase 1 agent collection**)
 - [ ] Confirm `eval_results_v4/eval_precomputed_v4.jsonl` exists with 36 rows
 - [ ] Clear outputs on cells 4+ (so live demo shows fresh execution)
-- [ ] Have all 4 notebook tabs open (v1–v4) for the evolution tour
+- [ ] Have the v4 notebook open for the live demo (v1–v3 are retired)
 - [ ] Test that cell 4 (quality evaluators) completes in < 90s
 
 ### Fallback Plan

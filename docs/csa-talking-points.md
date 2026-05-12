@@ -5,11 +5,11 @@
 
 ---
 
-## Part 1: `multi_agent_evaluation.ipynb` — The DevOps Evaluation Checklist
+## Part 1: `multi_agent_evaluation.ipynb` — The Readiness Checklist (Start Here)
 
 ### What This Notebook Does
 
-> "This is the full pre-production readiness checklist for multi-agent systems with tools. Think of it as the 'can my agents actually run in production?' notebook."
+> "This is the full pre-production readiness checklist for multi-agent systems with tools. Think of it as the 'can my agents actually run in production?' notebook. **Start here before measuring quality.**"
 
 ### Section-by-Section Talking Points
 
@@ -61,11 +61,11 @@
 
 ---
 
-## Part 2: `test_my_agents_v4.ipynb` — The AI Evaluation SDK Notebook
+## Part 2: `test_my_agents_v4.ipynb` — The Quality Evaluation (Step 2)
 
 ### What This Notebook Does
 
-> "This notebook evaluates agent *quality* — not can it run, but how well does it answer? It uses the Azure AI Evaluation SDK's batch `evaluate()` function with 7 evaluators."
+> "Once your agents are running, this notebook evaluates agent *quality* — not can it run, but how well does it answer? It uses the Azure AI Evaluation SDK's batch `evaluate()` function with 7 evaluators."
 
 ### The Two-Phase Architecture (Most Important Pattern)
 
@@ -105,7 +105,7 @@ Phase 2: Run evaluate() on saved JSONL → scores    (fast, deterministic, retry
 - "These answer: is the response grounded in context, does it address the question, is it well-structured, and is it readable?"
 
 **Section 5 — Phase 2, Batch 2: Agentic Evaluators**
-- 30-second cooldown between batches (rate limit management)
+- 60-second cooldown between batches (rate limit management)
 - Runs 3 NEW evaluators: **TaskAdherence**, **IntentResolution**, **ResponseCompleteness**
 - "These are purpose-built for agent scenarios — they didn't exist in earlier SDK versions"
 - TaskAdherence: Did the agent follow its instructions?
@@ -172,7 +172,7 @@ answer = response.output_text
 
 - 4 evaluators × 36 rows = fine
 - 7 evaluators × 36 rows simultaneously = 429 storm
-- Solution: split into 2 batches with a 30-second cooldown
+- Solution: split into 2 batches with a 60-second cooldown
 - The SDK does NOT manage this for you — you must do it yourself
 - Agent calls also need retry logic (3 attempts, exponential backoff)
 
@@ -200,16 +200,16 @@ evaluator_config={"response": "${data.response}"}
   - **Out-of-scope**: Does it gracefully decline?
 - "If you only test the happy path, you'll be surprised in production"
 
-### 7. Two Notebooks, Two Purposes
+### 7. Two Notebooks, Two Purposes — Use in Sequence
 
-| Notebook | Tests | Audience |
-|----------|-------|----------|
-| `multi_agent_evaluation.ipynb` | Can it run? (infra, RBAC, routing, tools, E2E) | Platform/DevOps teams |
-| `test_my_agents_v4.ipynb` | How well does it answer? (quality + agentic scoring) | AI/ML teams, product owners |
+| Step | Notebook | Tests | Audience |
+|------|----------|-------|----------|
+| **1 (Start here)** | `multi_agent_evaluation.ipynb` | Can it run? (infra, RBAC, routing, tools, E2E) | Platform/DevOps teams |
+| **2** | `test_my_agents_v4.ipynb` | How well does it answer? (quality + agentic scoring) | AI/ML teams, product owners |
 
+- Start with `multi_agent_evaluation` to validate the plumbing works
+- Then use `test_my_agents_v4` to measure and improve response quality
 - Use both for full coverage
-- Start with `multi_agent_evaluation` to validate the plumbing
-- Then use `v4` to measure and improve response quality
 
 ### 8. What to Tell Customers
 

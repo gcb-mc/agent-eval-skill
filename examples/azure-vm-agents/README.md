@@ -1,11 +1,26 @@
-# Azure VM Agents — Example Evaluation
+# Azure VM Agents — Readiness Evaluation (Step 1)
 
-This notebook demonstrates evaluating **Azure infrastructure management agents** deployed in Azure AI Foundry:
+> **Start here.** This notebook validates that your agents can actually run before you measure quality.
+
+This notebook demonstrates the **exploration and readiness** evaluation for Azure infrastructure management agents deployed in Azure AI Foundry:
 
 | Agent | Role |
 |-------|------|
 | `monitor-recommendations-agent` | Retrieves Azure Monitor recommendations |
 | `vm-resize-analyst-agent` | Analyzes VM sizing and recommends changes |
+
+## What It Checks
+
+| Section | Validates |
+|---------|-----------|
+| Infrastructure | Agent registration, container images, version status |
+| RBAC | Managed identity roles at correct scopes |
+| Connectivity | Tool backends reachable (Azure APIs) |
+| Routing | Orchestrator picks the right specialist agent |
+| Tool selection | Each agent selects the right tool for a prompt |
+| E2E execution | Full pipeline with live Azure API calls |
+| Handoff | Multi-agent prompts route correctly |
+| Summary | Auto-generated scorecard + quick-fix commands |
 
 ## Requirements
 
@@ -16,13 +31,13 @@ This example requires additional Azure permissions and resources:
 
 ## Notebook
 
-- `multi_agent_evaluation.ipynb` — Full multi-agent eval with tool connectivity checks, routing, handoff detection
+- `multi_agent_evaluation.ipynb` — Full readiness evaluation with infrastructure, RBAC, routing, and E2E checks
 
-## How to use as reference
+## Two-Notebook Journey
 
-This is a **domain-specific example**. For your own agents, use the generic workflow:
+This is **Step 1** of the evaluation journey:
 
-1. Fill in `agents.yaml` at repo root with your agents
-2. Run `notebooks/test_my_agents_v4.ipynb`
+1. ✅ **Step 1 (this notebook):** Can it run? — Validate infra, identity, connectivity, routing
+2. 📊 **Step 2:** How well does it run? — Use [`notebooks/test_my_agents_v4.ipynb`](../../notebooks/test_my_agents_v4.ipynb) for quality scoring with 7 evaluators and dashboards
 
-See the main [README](../../README.md) for details.
+See the main [README](../../README.md) for the full workflow.

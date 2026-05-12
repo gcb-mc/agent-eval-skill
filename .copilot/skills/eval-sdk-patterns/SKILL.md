@@ -81,7 +81,7 @@ result = evaluate(
 
 ```
 Batch 1: Quality (Groundedness, Relevance, Coherence, Fluency)    → run
-         ↓ 30-second cooldown (time.sleep(30))
+         ↓ 60-second cooldown (time.sleep(60))
 Batch 2: Agentic (TaskAdherence, IntentResolution, ResponseCompleteness) → run
 ```
 

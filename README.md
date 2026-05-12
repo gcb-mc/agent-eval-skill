@@ -30,25 +30,53 @@ jupyter notebook notebooks/test_my_agents_v4.ipynb
 
 That's it. The notebook reads `agents.yaml` and evaluates whatever agents you defined.
 
+> **Note:** `agents.yaml` integration is planned but not yet wired into the notebook. Currently, edit Section 0 (Configuration) in the notebook to point to your agents. See [QUICKSTART.md](QUICKSTART.md) for details.
+
 See **[QUICKSTART.md](QUICKSTART.md)** for the full walkthrough.
 
 ---
 
-## 🎯 How It Works
+## 🎯 Two-Notebook Evaluation Journey
+
+This repo provides **two complementary notebooks** — use them in sequence for full coverage:
+
+### Step 1: Can It Run? → `multi_agent_evaluation.ipynb`
+
+The **exploration and readiness** notebook. Use this first to validate that your agents, infrastructure, and tooling actually work before measuring quality.
 
 ```
-agents.yaml          →  create_dataset.py  →  eval_dataset.jsonl
-(your agents)           (generates test data)
-
-eval_dataset.jsonl   →  test_my_agents_v4.ipynb  →  Phase 1: call agents → responses
-                                                  →  Phase 2: evaluate() → scores
-                                                  →  Dashboard + export
+✅ Infrastructure checks    — Is the agent registered? Is the image deployed?
+✅ RBAC validation          — Does the managed identity have the right roles?
+✅ Tool connectivity        — Can each agent's tools reach their backend APIs?
+✅ Agent routing            — Does the orchestrator pick the right specialist?
+✅ End-to-end execution     — Full pipeline with live Azure API calls
+✅ Cross-agent handoff      — Do multi-agent prompts route correctly?
 ```
 
-1. **`agents.yaml`** — Single config file where you describe your agents (names, roles, descriptions, sample prompts)
-2. **`create_dataset.py`** — Auto-generates evaluation JSONL with role-appropriate test cases
-3. **`test_my_agents_v4.ipynb`** — Evaluation notebook that runs 7 Azure AI evaluators with a two-phase approach
-4. **Results** — Per-agent dashboard, CSV/JSON export, cached responses for re-runs
+📍 Located at: `examples/azure-vm-agents/multi_agent_evaluation.ipynb`
+
+### Step 2: How Well Does It Run? → `test_my_agents_v4.ipynb`
+
+The **quality evaluation** notebook. Once your agents are running, use this to measure response quality with structured, repeatable scoring and dashboards.
+
+```
+📊 7 Azure AI evaluators   — Groundedness, Relevance, Coherence, Fluency,
+                              TaskAdherence, IntentResolution, ResponseCompleteness
+📊 Two-phase approach      — Phase 1: collect responses → Phase 2: score with evaluate()
+📊 36 test cases           — 24 standard + 12 edge cases (prompt injection, ambiguity, etc.)
+📊 Dashboard & export      — Heatmaps, standard vs edge comparison, CSV/JSON export
+```
+
+📍 Located at: `notebooks/test_my_agents_v4.ipynb`
+
+---
+
+## 📓 Notebooks
+
+| Notebook | Location | Purpose | When to Use |
+|----------|----------|---------|-------------|
+| `multi_agent_evaluation.ipynb` | `examples/azure-vm-agents/` | **Can it run?** — infra, RBAC, routing, tool connectivity, E2E | First — validate the plumbing works |
+| **`test_my_agents_v4.ipynb`** | `notebooks/` | **How well does it run?** — 7 evaluators, dashboards, export | Second — measure and improve quality |
 
 ---
 
@@ -73,28 +101,20 @@ Install as a Copilot skill by copying `.copilot/skills/` into your project, or c
 agent-eval-skill/
 ├── agents.yaml.template          # ← YOUR CONFIG: describe your agents here
 ├── notebooks/
-│   └── test_my_agents_v4.ipynb   # ← MAIN NOTEBOOK: two-phase evaluation with 7 evaluators
+│   └── test_my_agents_v4.ipynb   # ← QUALITY EVAL: 7 evaluators + dashboards
 ├── _test_pack/
 │   ├── create_dataset.py         # generates eval JSONL from agents.yaml
 │   └── eval_dataset_template.jsonl
 ├── .copilot/skills/              # 6 Copilot skills (auto-discovered)
 ├── examples/
 │   ├── financial-agents/         # example: test data + results for financial agents
-│   └── azure-vm-agents/         # example: infra agent evaluation with RBAC + tool checks
+│   └── azure-vm-agents/         # ← READINESS EVAL: infra + RBAC + routing checks
+│       └── multi_agent_evaluation.ipynb
 ├── docs/                         # evaluation guide, walkthrough, talking points
 ├── .env.template
 ├── requirements.txt
 └── README.md
 ```
-
----
-
-## 📓 Notebooks
-
-| Notebook | Location | Purpose |
-|----------|----------|---------|
-| **`test_my_agents_v4.ipynb`** | `notebooks/` | **Start here** — two-phase evaluation with 7 evaluators, dashboard, and export |
-| `multi_agent_evaluation.ipynb` | `examples/azure-vm-agents/` | Reference: infra agent evaluation with RBAC + tool checks |
 
 ---
 
@@ -132,7 +152,7 @@ Toggle evaluators on/off in `agents.yaml` → `evaluators` section.
 | Document | Description |
 |----------|-------------|
 | [QUICKSTART.md](QUICKSTART.md) | Step-by-step bring-your-own-agents guide |
-| [EVALUATION_GUIDE.md](docs/EVALUATION_GUIDE.md) | Detailed explanation of the evaluation pipeline |
+| [EVALUATION_GUIDE.md](docs/EVALUATION_GUIDE.md) | Detailed explanation of the v4 evaluation pipeline |
 | [Walkthrough](docs/walkthrough_agent_evaluation_updates.md) | Talk-through of v1→v4 evolution and key patterns |
 | [CSA Talking Points](docs/csa-talking-points.md) | Cloud Solution Architect guide for customer conversations |
 

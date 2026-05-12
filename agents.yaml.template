@@ -73,13 +73,22 @@ dataset:
 evaluators:
   # Azure AI Evaluation SDK built-in evaluators
   # Set to true/false to enable/disable each one
+
+  # Quality evaluators (Batch 1)
   groundedness: true
   relevance: true
   coherence: true
   fluency: true
-  similarity: true
-  f1_score: true
-  violence: true        # content safety evaluator
+
+  # Agentic evaluators (Batch 2)
+  task_adherence: true
+  intent_resolution: true
+  response_completeness: true
+
+  # Optional evaluators (uncomment to enable)
+  # similarity: true
+  # f1_score: true
+  # violence: true        # content safety evaluator
   # Add custom evaluators here if needed
   # my_custom_eval: true
 
