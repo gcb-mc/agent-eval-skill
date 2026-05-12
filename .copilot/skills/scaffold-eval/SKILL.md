@@ -8,7 +8,9 @@ source: "repo workflow for bringing your own Foundry agents into a reusable eval
 
 ## Context
 
-This skill teaches how to scaffold a **complete evaluation for any Azure AI Foundry agents** using this repo's config-driven workflow. The key idea is: **describe your agents once in `agents.yaml`, generate realistic JSONL test data, run the starter notebook, then compare results per agent**.
+This skill teaches how to scaffold a **complete evaluation for any Azure AI Foundry agents** using this repo's config-driven workflow. The key idea is: **describe your agents once in `agents.yaml`, generate realistic JSONL test data, run the evaluation notebook, then compare results per agent**.
+
+> **Note:** `agents.yaml` integration is planned but not yet wired into the notebook. Currently, edit Section 0 (Configuration) in `test_my_agents_v4.ipynb` to point to your agents.
 
 Use this skill when:
 - Bringing your own Foundry agents into this repo
@@ -65,8 +67,9 @@ evaluators:
   relevance: true
   coherence: true
   fluency: true
-  f1_score: true
-  violence: false
+  task_adherence: true
+  intent_resolution: true
+  response_completeness: true
 
 output:
   results_dir: "eval_results"
@@ -111,9 +114,11 @@ If available, you can auto-generate starter data with:
 python _test_pack/create_dataset.py
 ```
 
-### Customize the Starter Notebook
+### Customize the Evaluation Notebook
 
-`notebooks/test_my_agents_v4.ipynb` reads `agents.yaml` automatically.
+`notebooks/test_my_agents_v4.ipynb` is the quality evaluation notebook.
+
+> **Note:** `agents.yaml` integration is planned. Currently, edit Section 0 (Configuration) to point to your agents, dataset, and output paths.
 
 The default customization path is:
 1. Fill out `agents.yaml`

@@ -30,7 +30,7 @@ Use this skill when:
 result_quality = evaluate(data=JSONL_FILE, evaluators=quality_evaluators, ...)
 
 # Cooldown
-time.sleep(30)
+time.sleep(60)
 
 # Batch 2: Agentic evaluators
 result_agentic = evaluate(data=JSONL_FILE, evaluators=agentic_evaluators, ...)
