@@ -147,14 +147,6 @@ If your agent evaluation project does not yet include these, consider adding:
 | Red teaming / PyRIT | Medium | Add PyRIT-based adversarial test suite alongside quality evaluators |
 | Entra / Purview governance | Medium | Register agents in Entra with Agent IDs; attach Purview data policies |
 
-## References
-
-- [Agent Factory: Top 5 Observability Best Practices](https://azure.microsoft.com/en-us/blog/agent-factory-top-5-agent-observability-best-practices-for-reliable-ai/)
-- [End-to-End Observability in Azure AI Foundry](https://devblogs.microsoft.com/foundry/achieve-end-to-end-observability-in-azure-ai-foundry/)
-- [What's New in Foundry — April 2026](https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-apr-2026/)
-- [Agent 365 GA Blog](https://www.microsoft.com/en-us/security/blog/2026/05/01/microsoft-agent-365-now-generally-available-expands-capabilities-and-integrations/)
-- [Deploying Agent 365 at Microsoft](https://www.microsoft.com/insidetrack/blog/deploying-microsoft-agent-365-how-were-extending-our-infrastructure-to-manage-agents-at-microsoft/)
-
 ## Anti-Patterns
 
 - Don't treat observability as optional — it's the foundation for debugging, compliance, and trust
