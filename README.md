@@ -25,10 +25,10 @@ az login
 python _test_pack/create_dataset.py
 
 # 5. Run the evaluation
-jupyter notebook notebooks/starter_eval.ipynb
+jupyter notebook notebooks/test_my_agents_v4.ipynb
 ```
 
-That's it. The starter notebook reads `agents.yaml` and evaluates whatever agents you defined.
+That's it. The notebook reads `agents.yaml` and evaluates whatever agents you defined.
 
 See **[QUICKSTART.md](QUICKSTART.md)** for the full walkthrough.
 
@@ -40,14 +40,14 @@ See **[QUICKSTART.md](QUICKSTART.md)** for the full walkthrough.
 agents.yaml          →  create_dataset.py  →  eval_dataset.jsonl
 (your agents)           (generates test data)
 
-eval_dataset.jsonl   →  starter_eval.ipynb  →  Phase 1: call agents → responses
-                                             →  Phase 2: evaluate() → scores
-                                             →  Dashboard + export
+eval_dataset.jsonl   →  test_my_agents_v4.ipynb  →  Phase 1: call agents → responses
+                                                  →  Phase 2: evaluate() → scores
+                                                  →  Dashboard + export
 ```
 
 1. **`agents.yaml`** — Single config file where you describe your agents (names, roles, descriptions, sample prompts)
 2. **`create_dataset.py`** — Auto-generates evaluation JSONL with role-appropriate test cases
-3. **`starter_eval.ipynb`** — Config-driven notebook that evaluates any agents with 7 Azure AI evaluators
+3. **`test_my_agents_v4.ipynb`** — Evaluation notebook that runs 7 Azure AI evaluators with a two-phase approach
 4. **Results** — Per-agent dashboard, CSV/JSON export, cached responses for re-runs
 
 ---
@@ -73,14 +73,14 @@ Install as a Copilot skill by copying `.copilot/skills/` into your project, or c
 agent-eval-skill/
 ├── agents.yaml.template          # ← YOUR CONFIG: describe your agents here
 ├── notebooks/
-│   └── starter_eval.ipynb        # ← MAIN NOTEBOOK: config-driven, works with any agents
+│   └── test_my_agents_v4.ipynb   # ← MAIN NOTEBOOK: two-phase evaluation with 7 evaluators
 ├── _test_pack/
 │   ├── create_dataset.py         # generates eval JSONL from agents.yaml
 │   └── eval_dataset_template.jsonl
 ├── .copilot/skills/              # 6 Copilot skills (auto-discovered)
 ├── examples/
-│   ├── financial-agents/         # example: document summarization agents (v1-v4)
-│   └── azure-vm-agents/         # example: Azure infra management agents
+│   ├── financial-agents/         # example: test data + results for financial agents
+│   └── azure-vm-agents/         # example: infra agent evaluation with RBAC + tool checks
 ├── docs/                         # evaluation guide, walkthrough, talking points
 ├── .env.template
 ├── requirements.txt
@@ -93,9 +93,8 @@ agent-eval-skill/
 
 | Notebook | Location | Purpose |
 |----------|----------|---------|
-| **`starter_eval.ipynb`** | `notebooks/` | **Start here** — reads `agents.yaml`, evaluates any agents, generates dashboard |
-| Financial agents (v1–v4) | `examples/financial-agents/` | Reference: document summarization evaluation evolution |
-| Azure VM agents | `examples/azure-vm-agents/` | Reference: infra agent evaluation with RBAC + tool checks |
+| **`test_my_agents_v4.ipynb`** | `notebooks/` | **Start here** — two-phase evaluation with 7 evaluators, dashboard, and export |
+| `multi_agent_evaluation.ipynb` | `examples/azure-vm-agents/` | Reference: infra agent evaluation with RBAC + tool checks |
 
 ---
 

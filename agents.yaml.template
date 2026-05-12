@@ -5,7 +5,7 @@
 # Instructions:
 #   1. Copy this file to `agents.yaml`
 #   2. Replace the example agents below with your own Foundry agents
-#   3. Run `notebooks/starter_eval.ipynb` or `python _test_pack/create_dataset.py`
+#   3. Run `notebooks/test_my_agents_v4.ipynb` or `python _test_pack/create_dataset.py`
 
 # ---------------------------------------------------------------------------
 # Azure AI Foundry project settings

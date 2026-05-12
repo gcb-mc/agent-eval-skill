@@ -19,13 +19,13 @@ A GitHub Copilot agent skill for evaluating **any** multi-agent AI system on Azu
 cp agents.yaml.template agents.yaml   # describe your agents
 cp .env.template .env                 # add your endpoints
 python _test_pack/create_dataset.py   # generate test data
-jupyter notebook notebooks/starter_eval.ipynb  # run evaluation
+jupyter notebook notebooks/test_my_agents_v4.ipynb  # run evaluation
 ```
 
 ## Key Files
 
 - `agents.yaml` — Single source of truth for agent configuration
-- `notebooks/starter_eval.ipynb` — Generic, config-driven evaluation notebook
+- `notebooks/test_my_agents_v4.ipynb` — Two-phase evaluation notebook with 7 evaluators
 - `_test_pack/create_dataset.py` — Generates eval JSONL from agents.yaml
 - `examples/` — Domain-specific reference implementations (financial, Azure VM)
 

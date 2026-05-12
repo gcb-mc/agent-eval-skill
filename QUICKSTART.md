@@ -79,7 +79,7 @@ python _test_pack/create_dataset.py --output my_tests.jsonl  # custom output pat
 
 ```bash
 # From repo root (important!)
-jupyter notebook notebooks/starter_eval.ipynb
+jupyter notebook notebooks/test_my_agents_v4.ipynb
 ```
 
 The notebook will:

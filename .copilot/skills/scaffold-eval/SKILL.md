@@ -26,7 +26,7 @@ Use this skill when:
 3. Fill in your Foundry agent names and metadata
 4. Set up `.env` with your Foundry endpoints
 5. Generate test data: `python _test_pack/create_dataset.py`
-6. Run `notebooks/starter_eval.ipynb`
+6. Run `notebooks/test_my_agents_v4.ipynb`
 7. Review the dashboard and per-agent scores
 
 ### What `agents.yaml` Controls
@@ -113,7 +113,7 @@ python _test_pack/create_dataset.py
 
 ### Customize the Starter Notebook
 
-`notebooks/starter_eval.ipynb` reads `agents.yaml` automatically.
+`notebooks/test_my_agents_v4.ipynb` reads `agents.yaml` automatically.
 
 The default customization path is:
 1. Fill out `agents.yaml`

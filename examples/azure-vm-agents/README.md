@@ -23,6 +23,6 @@ This example requires additional Azure permissions and resources:
 This is a **domain-specific example**. For your own agents, use the generic workflow:
 
 1. Fill in `agents.yaml` at repo root with your agents
-2. Run `notebooks/starter_eval.ipynb`
+2. Run `notebooks/test_my_agents_v4.ipynb`
 
 See the main [README](../../README.md) for details.
