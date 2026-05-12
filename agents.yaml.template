@@ -1,0 +1,92 @@
+# agents.yaml — Describe YOUR agents here
+# This file is the single source of truth for evaluation.
+# The starter notebook and dataset generator read this file.
+#
+# Instructions:
+#   1. Copy this file to `agents.yaml`
+#   2. Replace the example agents below with your own Foundry agents
+#   3. Run `notebooks/starter_eval.ipynb` or `python _test_pack/create_dataset.py`
+
+# ---------------------------------------------------------------------------
+# Azure AI Foundry project settings
+# ---------------------------------------------------------------------------
+project:
+  # Your Foundry project endpoint (from Azure portal → AI Foundry → project → Overview)
+  endpoint_env: "AZURE_AI_ENDPOINT"           # env var name (set in .env)
+  eval_endpoint_env: "AZURE_AI_EVAL_ENDPOINT" # eval endpoint env var (often same host, no /api/projects path)
+  model: "gpt-4o"                             # model deployment used by your agents
+
+# ---------------------------------------------------------------------------
+# Your agents — add/remove/rename freely
+# ---------------------------------------------------------------------------
+agents:
+  # Each key becomes the agent name passed to Foundry's responses.create()
+  # Fields:
+  #   description  — what the agent does (used in skill context & dataset generation)
+  #   role         — short role label (e.g., "summarizer", "analyst", "router")
+  #   input_type   — what the agent expects (e.g., "text", "document", "question")
+  #   output_type  — what the agent returns (e.g., "summary", "analysis", "recommendation")
+  #   sample_prompt — one example prompt to seed test data generation
+
+  my-first-agent:
+    description: "Analyzes input and provides a structured summary"
+    role: "summarizer"
+    input_type: "text"
+    output_type: "summary"
+    sample_prompt: "Summarize the key points from the following input."
+
+  my-second-agent:
+    description: "Asks clarifying questions when the input is ambiguous"
+    role: "clarifier"
+    input_type: "text"
+    output_type: "questions"
+    sample_prompt: "What additional information is needed to fully address this request?"
+
+  my-third-agent:
+    description: "Generates a final report based on collected information"
+    role: "reporter"
+    input_type: "structured data"
+    output_type: "report"
+    sample_prompt: "Generate a comprehensive report from the provided data."
+
+# ---------------------------------------------------------------------------
+# Evaluation dataset
+# ---------------------------------------------------------------------------
+dataset:
+  # Path to your eval JSONL (relative to repo root)
+  # If this file doesn't exist, run `python _test_pack/create_dataset.py` to generate it
+  path: "eval_dataset.jsonl"
+
+  # Number of test rows to generate per agent (used by create_dataset.py)
+  rows_per_agent: 5
+
+  # Columns in the JSONL — these map to evaluator inputs
+  columns:
+    query: "query"         # the prompt sent to the agent
+    response: "response"   # the agent's response (filled during Phase 1)
+    context: "context"     # ground truth or reference context
+    ground_truth: "ground_truth"  # expected answer (for correctness evaluators)
+
+# ---------------------------------------------------------------------------
+# Evaluators to run in Phase 2
+# ---------------------------------------------------------------------------
+evaluators:
+  # Azure AI Evaluation SDK built-in evaluators
+  # Set to true/false to enable/disable each one
+  groundedness: true
+  relevance: true
+  coherence: true
+  fluency: true
+  similarity: true
+  f1_score: true
+  violence: true        # content safety evaluator
+  # Add custom evaluators here if needed
+  # my_custom_eval: true
+
+# ---------------------------------------------------------------------------
+# Output settings
+# ---------------------------------------------------------------------------
+output:
+  results_dir: "eval_results"         # directory for precomputed responses + eval results
+  precomputed_file: "precomputed.jsonl"  # Phase 1 output (agent responses)
+  eval_results_file: "eval_results.json" # Phase 2 output (evaluator scores)

@@ -8,7 +8,7 @@ source: "proven patterns from production multi-agent evaluation using azure-ai-e
 
 ## Context
 
-This skill covers how to use the **Azure AI Evaluation SDK** (`azure-ai-evaluation`) to evaluate AI agent responses at scale. It documents the two-phase approach, all 7 built-in evaluators, the batch `evaluate()` function, and the column mapping system.
+This skill covers how to use the **Azure AI Evaluation SDK** (`azure-ai-evaluation`) to evaluate AI agent responses at scale. It documents the two-phase approach, all 7 built-in evaluators, the batch `evaluate()` function, and the column mapping system. In this repo, keep evaluator choices, dataset inputs, and agent-specific settings aligned with `agents.yaml`.
 
 Use this skill when:
 - Setting up batch evaluation of agent responses with `evaluate()`
@@ -59,8 +59,9 @@ from azure.ai.evaluation import (
 )
 
 # Phase 2: Run evaluators on pre-computed data
+# Keep this path and enabled evaluators aligned with agents.yaml.
 result = evaluate(
-    data="eval_precomputed.jsonl",
+    data="data/eval_dataset.jsonl",
     evaluators={
         "groundedness": GroundednessEvaluator(model_config=eval_model_config, credential=credential),
         "relevance": RelevanceEvaluator(model_config=eval_model_config, credential=credential),
@@ -106,17 +107,17 @@ Each row contains:
 
 ```json
 {
-  "sample_id": "DOC-001-Q01",
-  "query": "What is the company name?",
-  "context": "Northwind Solar Holdings is a renewable energy company...",
-  "expected_answer": "Northwind Solar Holdings",
-  "response": "The company is Northwind Solar Holdings.",
+  "sample_id": "ITEM-001",
+  "query": "What is the product return window?",
+  "context": "The support article states that unopened items can be returned within 30 days of delivery.",
+  "expected_answer": "30 days",
+  "response": "Unopened items can be returned within 30 days of delivery.",
   "category": "standard",
-  "document_id": "DOC-001"
+  "source_id": "ARTICLE-001"
 }
 ```
 
-Include both `standard` and `edge_case` categories for comprehensive coverage.
+Include both `standard` and `edge_case` categories for comprehensive coverage, and keep the dataset schema consistent with the fields configured in `agents.yaml`.
 
 ### Edge Case Categories
 

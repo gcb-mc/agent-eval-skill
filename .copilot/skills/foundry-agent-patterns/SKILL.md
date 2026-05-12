@@ -8,7 +8,7 @@ source: "production patterns for Foundry-hosted prompt agents using OpenAI SDK +
 
 ## Context
 
-This skill covers the correct patterns for calling **Azure AI Foundry prompt agents** using the OpenAI SDK. The `responses.create` + `agent_reference` pattern is the current method — it replaces the old Assistants beta API.
+This skill covers the correct patterns for calling **Azure AI Foundry prompt agents** using the OpenAI SDK. The `responses.create` + `agent_reference` pattern is the current method — it replaces the old Assistants beta API. In this repo, agent names and related configuration should come from `agents.yaml`, not hardcoded strings in notebooks or scripts.
 
 Use this skill when:
 - Calling Foundry prompt agents from Python code
@@ -22,10 +22,11 @@ Use this skill when:
 ### Calling Foundry Prompt Agents
 
 ```python
+agent_name = "your-agent-name"  # load this from agents.yaml
 response = openai_client.responses.create(
     extra_body={
         "agent_reference": {
-            "name": "your-agent-name",   # exact Foundry registered name
+            "name": agent_name,
             "type": "agent_reference",
         }
     },
@@ -38,6 +39,7 @@ answer = response.output_text
 - This is `responses.create` + `agent_reference` — NOT `chat.completions.create`
 - NOT `beta.assistants` (old pattern, deprecated for Foundry prompt agents)
 - The `agent_reference.name` must match the exact name registered in Foundry
+- Prefer loading the agent name from `agents.yaml` so the same config drives scaffolding, execution, and evaluation
 
 ### AIProjectClient Setup
 

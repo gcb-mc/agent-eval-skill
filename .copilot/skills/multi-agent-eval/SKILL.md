@@ -8,7 +8,7 @@ source: "battle-tested framework for evaluating Foundry-hosted multi-agent syste
 
 ## Context
 
-This skill teaches how to evaluate **multi-agent AI systems with tools** hosted on Azure AI Foundry. It covers the full evaluation stack: infrastructure validation, RBAC checks, agent routing accuracy, tool selection, end-to-end pipeline testing, and cross-agent handoff detection.
+This skill teaches how to evaluate **multi-agent AI systems with tools** hosted on Azure AI Foundry. It covers the full evaluation stack: infrastructure validation, RBAC checks, agent routing accuracy, tool selection, end-to-end pipeline testing, and cross-agent handoff detection. In this repo, treat `agents.yaml` as the source of truth for agent, evaluator, and scenario configuration.
 
 Use this skill when:
 - Setting up evaluation for multi-agent systems on Azure AI Foundry
@@ -39,7 +39,7 @@ The evaluation framework is structured as 10 sections:
 
 ### Declarative Agent Configuration
 
-Everything is defined in a single `MULTI_AGENT_CONFIG` dict:
+Everything is defined in `agents.yaml` and loaded into a single `MULTI_AGENT_CONFIG` dict at runtime:
 
 ```python
 MULTI_AGENT_CONFIG = {
@@ -94,15 +94,16 @@ Test names use section prefixes: `infra:`, `rbac:`, `tool_conn:`, `routing:`, `e
 
 ### Live Tool Execution
 
-`execute_tool(tool_name, tool_args)` dispatches to live Azure SDK calls (Compute, Monitor, Advisor, Retail Prices API). Returns a dict on success or `{"error": ...}` on failure.
+`execute_tool(tool_name, tool_args)` dispatches to the live backend or service handlers defined for the agents in `agents.yaml`. Returns a dict on success or `{"error": ...}` on failure.
 
 ### Adding a New Agent
 
-1. Add entry to `MULTI_AGENT_CONFIG["agents"]` with: name, description, version, image_name, image_tag, required_roles, tools, tool_selection_tests, tool_executors
-2. Add routing tests to `routing_tests`
-3. Add E2E scenarios to `e2e_scenarios`
-4. Optionally add handoff tests
-5. If new backend APIs are needed, add a handler branch in `execute_tool()`
+1. Add the agent definition to `agents.yaml` with its name, description, deployment metadata, tools, and evaluation settings
+2. Regenerate or load `MULTI_AGENT_CONFIG` from `agents.yaml`
+3. Add or update routing tests in `routing_tests`
+4. Add or update E2E scenarios in `e2e_scenarios`
+5. Optionally add handoff tests
+6. If new backend integrations are needed, add a handler branch in `execute_tool()`
 
 ## Anti-Patterns
 

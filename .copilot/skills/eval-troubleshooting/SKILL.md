@@ -8,7 +8,7 @@ source: "real-world gotchas encountered while building production evaluation pip
 
 ## Context
 
-This skill documents common issues and fixes encountered when evaluating AI agents with the Azure AI Evaluation SDK and Azure AI Foundry. These are real-world gotchas with proven solutions.
+This skill documents common issues and fixes encountered when evaluating AI agents with the Azure AI Evaluation SDK and Azure AI Foundry. These are real-world gotchas with proven solutions. In this repo, keep dataset paths, enabled evaluators, and agent names driven by `agents.yaml` rather than hardcoded in scripts.
 
 Use this skill when:
 - Evaluation runs are failing with 429 errors

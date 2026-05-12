@@ -1,143 +1,126 @@
 # 🧪 Agent Eval Skill
 
-A **GitHub Copilot agent skill** for evaluating multi-agent AI systems on Azure AI Foundry. Clone this repo or add it as a custom skill to get instant access to evaluation patterns, SDK usage, troubleshooting, and Microsoft's observability best practices — right inside Copilot.
+A **GitHub Copilot agent skill** for evaluating **any** multi-agent AI system on Azure AI Foundry. Describe your agents in `agents.yaml`, and this repo gives you everything: evaluation notebooks, test data generation, SDK patterns, and troubleshooting — all driven by your config.
 
 > Inspired by [bradygaster/squad](https://github.com/bradygaster/squad)'s skill-per-folder pattern.
 
 ---
 
-## 🚀 Install as a Copilot Skill
-
-### Option 1: Add to your repo (recommended)
-
-Copy the `.copilot/skills/` directory into your project:
+## 🚀 Quick Start (5 steps)
 
 ```bash
-# Clone this repo
-git clone https://github.com/gcb-mc/agent-eval-skill.git
-
-# Copy the skills into your project
-cp -r agent-eval-skill/.copilot/skills/ your-project/.copilot/skills/
-```
-
-Copilot CLI will auto-discover the skills when working in your repo.
-
-### Option 2: Use directly
-
-Clone and work inside this repo — all skills are available immediately:
-
-```bash
+# 1. Clone & install
 git clone https://github.com/gcb-mc/agent-eval-skill.git
 cd agent-eval-skill
 pip install -r requirements.txt
+
+# 2. Configure your agents
+cp agents.yaml.template agents.yaml    # ← describe YOUR agents here
+cp .env.template .env                  # ← add your Azure endpoints
+
+# 3. Authenticate
+az login
+
+# 4. Generate test data
+python _test_pack/create_dataset.py
+
+# 5. Run the evaluation
+jupyter notebook notebooks/starter_eval.ipynb
 ```
 
----
+That's it. The starter notebook reads `agents.yaml` and evaluates whatever agents you defined.
 
-## 🎯 Bring Your Own Agents
-
-**New here?** See **[QUICKSTART.md](QUICKSTART.md)** for a step-by-step guide to using this repo with your own Foundry agents.
-
-Quick version:
-1. Clone → `pip install -r requirements.txt` → `az login`
-2. Copy `.env.template` → `.env` and fill in your values
-3. Open a notebook and look for `# ⬇️ CUSTOMIZE` markers in the config cell
-4. Replace example agent names with your Foundry-registered agent names
-5. Run!
-
-### Per-Notebook Requirements
-
-| Notebook | Env Vars Needed | Test Data |
-|----------|----------------|-----------|
-| `test_my_agents.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_SUBSCRIPTION_ID` | Built-in config |
-| `test_my_agents_v2.ipynb` | `AZURE_AI_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
-| `test_my_agents_v3.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_AI_EVAL_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
-| `test_my_agents_v4.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_AI_EVAL_ENDPOINT` | `eval_dataset_v4.jsonl` |
-| `multi_agent_evaluation.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_SUBSCRIPTION_ID`, `AZURE_ACR_NAME` | None (live Azure APIs) |
+See **[QUICKSTART.md](QUICKSTART.md)** for the full walkthrough.
 
 ---
 
-## 📦 Skills Included
+## 🎯 How It Works
 
-| Skill | Description |
-|-------|-------------|
-| **[multi-agent-eval](.copilot/skills/multi-agent-eval/SKILL.md)** | How to evaluate multi-agent AI systems — routing, tool selection, E2E pipelines, handoff detection |
-| **[eval-sdk-patterns](.copilot/skills/eval-sdk-patterns/SKILL.md)** | Azure AI Evaluation SDK — 7 evaluators, batch `evaluate()`, two-phase approach, JSONL datasets |
-| **[foundry-agent-patterns](.copilot/skills/foundry-agent-patterns/SKILL.md)** | How to call Foundry prompt agents — `responses.create` + `agent_reference` pattern |
-| **[eval-troubleshooting](.copilot/skills/eval-troubleshooting/SKILL.md)** | Rate limits, content filters, column mapping gotchas, common SDK errors and fixes |
-| **[agent-observability](.copilot/skills/agent-observability/SKILL.md)** | Microsoft's 5 best practices — monitoring, tracing, logging, evaluation, governance |
+```
+agents.yaml          →  create_dataset.py  →  eval_dataset.jsonl
+(your agents)           (generates test data)
+
+eval_dataset.jsonl   →  starter_eval.ipynb  →  Phase 1: call agents → responses
+                                             →  Phase 2: evaluate() → scores
+                                             →  Dashboard + export
+```
+
+1. **`agents.yaml`** — Single config file where you describe your agents (names, roles, descriptions, sample prompts)
+2. **`create_dataset.py`** — Auto-generates evaluation JSONL with role-appropriate test cases
+3. **`starter_eval.ipynb`** — Config-driven notebook that evaluates any agents with 7 Azure AI evaluators
+4. **Results** — Per-agent dashboard, CSV/JSON export, cached responses for re-runs
+
+---
+
+## 📦 Skills (for Copilot CLI)
+
+Install as a Copilot skill by copying `.copilot/skills/` into your project, or clone this repo directly.
+
+| Skill | What it teaches Copilot |
+|-------|------------------------|
+| **[scaffold-eval](.copilot/skills/scaffold-eval/SKILL.md)** | How to scaffold evaluation for ANY agents — `agents.yaml` workflow, dataset generation, result interpretation |
+| **[multi-agent-eval](.copilot/skills/multi-agent-eval/SKILL.md)** | Multi-agent evaluation architecture — routing, tool selection, E2E, handoff detection |
+| **[eval-sdk-patterns](.copilot/skills/eval-sdk-patterns/SKILL.md)** | Azure AI Evaluation SDK — 7 evaluators, batch `evaluate()`, two-phase approach |
+| **[foundry-agent-patterns](.copilot/skills/foundry-agent-patterns/SKILL.md)** | How to call Foundry agents — `responses.create` + `agent_reference` pattern |
+| **[eval-troubleshooting](.copilot/skills/eval-troubleshooting/SKILL.md)** | Rate limits, content filters, column mapping gotchas, common fixes |
+| **[agent-observability](.copilot/skills/agent-observability/SKILL.md)** | Microsoft's 5 observability best practices |
+
+---
+
+## 📁 Repo Structure
+
+```
+agent-eval-skill/
+├── agents.yaml.template          # ← YOUR CONFIG: describe your agents here
+├── notebooks/
+│   └── starter_eval.ipynb        # ← MAIN NOTEBOOK: config-driven, works with any agents
+├── _test_pack/
+│   ├── create_dataset.py         # generates eval JSONL from agents.yaml
+│   └── eval_dataset_template.jsonl
+├── .copilot/skills/              # 6 Copilot skills (auto-discovered)
+├── examples/
+│   ├── financial-agents/         # example: document summarization agents (v1-v4)
+│   └── azure-vm-agents/         # example: Azure infra management agents
+├── docs/                         # evaluation guide, walkthrough, talking points
+├── .env.template
+├── requirements.txt
+└── README.md
+```
 
 ---
 
 ## 📓 Notebooks
 
-Two complementary evaluation notebooks in `notebooks/`:
-
-| Notebook | Purpose | Audience |
-|----------|---------|----------|
-| `multi_agent_evaluation.ipynb` | **Can it run?** — infra, RBAC, routing, tool connectivity, E2E | Platform/DevOps teams |
-| `test_my_agents_v4.ipynb` | **How well does it answer?** — 7 evaluators, quality + agentic scoring | AI/ML teams, product owners |
-
-### Quick Start
-
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-
-# 2. Authenticate to Azure
-az login
-
-# 3. Configure environment
-cp .env.template .env
-# Edit .env with your Azure subscription ID, endpoints, etc.
-
-# 4. Run the evaluation notebook
-jupyter notebook notebooks/test_my_agents_v4.ipynb
-```
+| Notebook | Location | Purpose |
+|----------|----------|---------|
+| **`starter_eval.ipynb`** | `notebooks/` | **Start here** — reads `agents.yaml`, evaluates any agents, generates dashboard |
+| Financial agents (v1–v4) | `examples/financial-agents/` | Reference: document summarization evaluation evolution |
+| Azure VM agents | `examples/azure-vm-agents/` | Reference: infra agent evaluation with RBAC + tool checks |
 
 ---
 
-## 🏗️ Architecture
-
-### Evaluation Framework (10 Sections)
-
-```mermaid
-graph TD
-    A[User Prompt] --> B[Agent Router]
-    B --> C[Specialist Agent 1]
-    B --> D[Specialist Agent 2]
-    C --> E[Tool 1a]
-    C --> F[Tool 1b]
-    D --> G[Tool 2a]
-    D --> H[Tool 2b]
-    E --> I[Azure APIs]
-    F --> I
-    G --> I
-    H --> I
-    I --> J[Grounded Response]
-
-    style B fill:#0072B2,stroke:#333,stroke-width:2px,color:#FFFFFF
-    style C fill:#009E73,stroke:#333,color:#FFFFFF
-    style D fill:#E69F00,stroke:#333,color:#000000
+## 🏗️ Two-Phase Evaluation Pattern
 
 ```
-
-### Two-Phase Evaluation Pattern
-
-```
-Phase 1: Call agents → save responses to JSONL     (slow, rate-limited)
+Phase 1: Call agents → save responses to JSONL     (slow, rate-limited, cached)
 Phase 2: Run evaluate() on saved JSONL → scores    (fast, deterministic, retryable)
 ```
 
----
+Phase 1 results are cached with a SHA-256 fingerprint of your agents + dataset. Re-runs skip agent calls unless something changed.
 
-## 📋 Key Patterns
+### 7 Built-In Evaluators
 
-- **Declarative config** — define agents, tools, tests in a single `MULTI_AGENT_CONFIG` dict
-- **AgentRouter** — uses OpenAI function-calling to route prompts to specialist agents
-- **Two-phase evaluation** — separate data collection from scoring for reliability
-- **Evaluator batching** — split 7 evaluators into 2 batches with 30s cooldown to avoid 429s
-- **Retry logic** — exponential backoff on agent calls with `[ERROR]`/`[CONTENT_FILTERED]` markers
+| Evaluator | Type | Score Range |
+|-----------|------|------------|
+| Groundedness | Quality | 1–5 |
+| Relevance | Quality | 1–5 |
+| Coherence | Quality | 1–5 |
+| Fluency | Quality | 1–5 |
+| Similarity | Quality | 1–5 |
+| F1 Score | Accuracy | 0–1 |
+| Violence | Safety | 0–7 severity |
+
+Toggle evaluators on/off in `agents.yaml` → `evaluators` section.
 
 ---
 
@@ -145,8 +128,9 @@ Phase 2: Run evaluate() on saved JSONL → scores    (fast, deterministic, retry
 
 | Document | Description |
 |----------|-------------|
-| [EVALUATION_GUIDE.md](docs/EVALUATION_GUIDE.md) | Detailed per-section explanation of the evaluation pipeline |
-| [Walkthrough](docs/walkthrough_agent_evaluation_updates.md) | 20-minute talk-through of v1→v4 evolution and key patterns |
+| [QUICKSTART.md](QUICKSTART.md) | Step-by-step bring-your-own-agents guide |
+| [EVALUATION_GUIDE.md](docs/EVALUATION_GUIDE.md) | Detailed explanation of the evaluation pipeline |
+| [Walkthrough](docs/walkthrough_agent_evaluation_updates.md) | Talk-through of v1→v4 evolution and key patterns |
 | [CSA Talking Points](docs/csa-talking-points.md) | Cloud Solution Architect guide for customer conversations |
 
 ---
@@ -156,8 +140,8 @@ Phase 2: Run evaluate() on saved JSONL → scores    (fast, deterministic, retry
 - Python 3.10+
 - Azure CLI (`az login`)
 - Azure subscription with AI Foundry project
-- Foundry-hosted prompt agents
-- Required RBAC roles assigned to agent managed identities
+- Foundry-hosted agents (any domain)
+- `pip install -r requirements.txt`
 
 ---
 

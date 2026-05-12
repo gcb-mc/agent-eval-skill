@@ -1,6 +1,6 @@
 # 🚀 Quickstart — Bring Your Own Agents
 
-This guide walks you through using this repo to evaluate **your own** Azure AI Foundry agents.
+Evaluate **any** Azure AI Foundry agents in under 10 minutes.
 
 ---
 
@@ -12,19 +12,47 @@ cd agent-eval-skill
 pip install -r requirements.txt
 ```
 
-## Step 2: Configure Environment
+## Step 2: Describe Your Agents
+
+Copy the template and edit it:
+
+```bash
+cp agents.yaml.template agents.yaml
+```
+
+Open `agents.yaml` and replace the example agents with yours:
+
+```yaml
+agents:
+  # Replace these with YOUR Foundry agent names
+  my-customer-service-bot:
+    description: "Answers customer questions about products and policies"
+    role: "responder"
+    input_type: "customer question"
+    output_type: "helpful answer"
+    sample_prompt: "What is your return policy for electronics?"
+
+  my-escalation-agent:
+    description: "Escalates complex issues to human support"
+    role: "clarifier"
+    input_type: "customer complaint"
+    output_type: "escalation decision"
+    sample_prompt: "I've been waiting 3 weeks for my refund and nobody is helping me."
+```
+
+**Agent roles** the dataset generator understands: `summarizer`, `clarifier`, `reporter`, `responder`, `reviewer`, `advisor`, `analyst`. Use any role — unknown roles get generic test templates.
+
+## Step 3: Configure Environment
 
 ```bash
 cp .env.template .env
 ```
 
-Edit `.env` with your values:
+Edit `.env`:
 
 ```bash
-AZURE_SUBSCRIPTION_ID=<your-subscription-id>
 AZURE_AI_ENDPOINT=https://<your-account>.services.ai.azure.com/api/projects/<your-project>
 AZURE_AI_EVAL_ENDPOINT=https://<your-account>.services.ai.azure.com
-AZURE_ACR_NAME=<your-acr-name>
 ```
 
 Then authenticate:
@@ -33,88 +61,67 @@ Then authenticate:
 az login
 ```
 
-## Step 3: Choose Your Notebook
-
-| Notebook | Purpose | Required Env Vars | Required Data |
-|----------|---------|-------------------|---------------|
-| `test_my_agents.ipynb` | Basic agent routing + custom scoring | `AZURE_AI_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
-| `test_my_agents_v2.ipynb` | Multi-agent pipeline + dashboard charts | `AZURE_AI_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
-| `test_my_agents_v3.ipynb` | Azure AI Eval SDK (individual evaluators) | `AZURE_AI_ENDPOINT`, `AZURE_AI_EVAL_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
-| `test_my_agents_v4.ipynb` | Batch `evaluate()` with 7 evaluators | `AZURE_AI_ENDPOINT`, `AZURE_AI_EVAL_ENDPOINT` | `eval_dataset_v4.jsonl` |
-| `multi_agent_evaluation.ipynb` | Full DevOps eval (infra, RBAC, routing, E2E) | `AZURE_AI_ENDPOINT`, `AZURE_SUBSCRIPTION_ID`, `AZURE_ACR_NAME` | None (uses live Azure APIs) |
-
-## Step 4: Customize for Your Agents
-
-Every notebook has a **Section 0 — Configuration** cell at the top. Look for `# ⬇️ CUSTOMIZE` markers. Here's what to replace:
-
-### For `test_my_agents*.ipynb` (v1–v4):
-
-Replace the agent names with your Foundry-registered agent names:
-
-```python
-# ⬇️ CUSTOMIZE: Replace with your Foundry agent names
-AGENTS = {
-    "summarizer": "your-summarizer-agent",      # was: agent-summarizer
-    "clarification": "your-clarification-agent", # was: User-clarification-agent
-    "reporter": "your-reporter-agent",           # was: report-generator-agent
-}
-```
-
-Replace the model deployment:
-
-```python
-# ⬇️ CUSTOMIZE: Your evaluation model deployment
-EVAL_DEPLOYMENT = "gpt-4o"   # or whatever model you have deployed
-```
-
-### For `multi_agent_evaluation.ipynb`:
-
-Replace the entire `MULTI_AGENT_CONFIG` with your agents:
-
-```python
-# ⬇️ CUSTOMIZE: Define your agents
-MULTI_AGENT_CONFIG = {
-    "project_endpoint": os.environ["AZURE_AI_ENDPOINT"],
-    "subscription_id": os.environ["AZURE_SUBSCRIPTION_ID"],
-    "acr_name": os.environ["AZURE_ACR_NAME"],
-    "model_deployment": "gpt-4.1-mini",   # ⬇️ CUSTOMIZE
-    "agents": [
-        {
-            "name": "your-agent-name",    # ⬇️ CUSTOMIZE
-            "description": "What this agent does",
-            # ... see README for full schema
-        },
-    ],
-}
-```
-
-## Step 5: Create Your Eval Dataset
-
-If using `test_my_agents_v4.ipynb`, create a JSONL file with your test cases. See `_test_pack/eval_dataset_template.jsonl` for the expected format:
-
-```json
-{"sample_id": "T-001", "query": "Your test question", "context": "Reference context", "expected_answer": "Expected answer", "response": "", "category": "standard", "document_id": "DOC-001"}
-```
-
-Fields:
-| Field | Required | Description |
-|-------|----------|-------------|
-| `sample_id` | Yes | Unique test case ID |
-| `query` | Yes | The question/prompt to send to the agent |
-| `context` | Yes | Reference context for grounding evaluation |
-| `expected_answer` | Yes | The correct/expected answer |
-| `response` | No | Leave empty — Phase 1 fills this in automatically |
-| `category` | Yes | `standard` or `edge_case` |
-| `document_id` | No | Group ID for per-document analysis |
-
-## Step 6: Run
+## Step 4: Generate Test Data
 
 ```bash
-# From repo root
-jupyter notebook notebooks/test_my_agents_v4.ipynb
+python _test_pack/create_dataset.py
 ```
 
-**Important:** Always launch Jupyter from the **repo root** directory, not from `notebooks/`. The notebooks resolve paths relative to the repo root.
+This reads `agents.yaml` and generates `eval_dataset.jsonl` with role-appropriate test prompts. Review the output and replace `[TODO]` entries with real test cases for better evaluation quality.
+
+Options:
+```bash
+python _test_pack/create_dataset.py --rows 10      # 10 rows per agent
+python _test_pack/create_dataset.py --output my_tests.jsonl  # custom output path
+```
+
+## Step 5: Run the Evaluation
+
+```bash
+# From repo root (important!)
+jupyter notebook notebooks/starter_eval.ipynb
+```
+
+The notebook will:
+1. Load your agents from `agents.yaml`
+2. **Phase 1**: Call each agent with every test prompt → cache responses
+3. **Phase 2**: Score responses with Azure AI evaluators (groundedness, relevance, etc.)
+4. **Dashboard**: Show per-agent comparison charts
+5. **Export**: Save results as CSV + JSON
+
+### What you'll see
+
+```
+✅ Loaded 2 agents from agents.yaml
+   • my-customer-service-bot (responder): Answers customer questions...
+   • my-escalation-agent (clarifier): Escalates complex issues...
+✅ Loaded 10 rows from eval_dataset.jsonl
+   Progress: 5/20
+   Progress: 10/20
+   ...
+✅ Phase 1 complete — 20 responses saved
+✅ 5 evaluators active: ['groundedness', 'relevance', 'coherence', 'fluency', 'f1_score']
+✅ Phase 2 complete — evaluation scores computed
+```
+
+---
+
+## 🔄 Re-running
+
+Phase 1 results are **cached** — if your agents and dataset haven't changed, re-runs skip the slow agent calls and jump straight to scoring. Change an agent name or modify the dataset and the cache invalidates automatically.
+
+---
+
+## 📂 Want to see examples?
+
+The `examples/` directory has two complete, working evaluations:
+
+| Example | Agents | Domain |
+|---------|--------|--------|
+| `examples/financial-agents/` | Summarizer, Clarifier, Reporter | Financial document processing |
+| `examples/azure-vm-agents/` | Monitor Recommender, VM Resize Analyst | Azure infrastructure management |
+
+These show the evaluation framework applied to real-world agent systems.
 
 ---
 
@@ -122,8 +129,17 @@ jupyter notebook notebooks/test_my_agents_v4.ipynb
 
 | Problem | Fix |
 |---------|-----|
-| `FileNotFoundError: _test_pack/...` | Launch Jupyter from the repo root, not `notebooks/` |
-| `429 rate limit errors` | The notebooks include retry logic; if persistent, increase cooldown in config |
-| Agent calls return errors | Check RBAC roles on your agent's managed identity (run `multi_agent_evaluation.ipynb` sections 2-4) |
-| `AZURE_AI_EVAL_ENDPOINT` missing | Required for v3/v4 notebooks — add to `.env` |
-| Content filter blocks evaluators | Use subtler edge case prompts (see eval-troubleshooting skill) |
+| `FileNotFoundError: agents.yaml` | Copy `agents.yaml.template` to `agents.yaml` and fill in your agents |
+| `KeyError: 'AZURE_AI_ENDPOINT'` | Add your endpoint to `.env` and restart the Jupyter kernel |
+| `429 rate limit errors` | Built-in retry logic handles most cases; increase `time.sleep()` in Phase 1 if persistent |
+| Agent calls return `[ERROR]` | Verify agent names match exactly what's in Foundry portal |
+| Content filter blocks evaluators | Use subtler test prompts (see `eval-troubleshooting` skill) |
+| Phase 1 not caching | Check that `eval_results/.cache_meta.json` fingerprint matches |
+
+---
+
+## Next Steps
+
+- **Customize test data**: Replace `[TODO]` entries in `eval_dataset.jsonl` with real expected answers
+- **Add evaluators**: Toggle safety evaluators on in `agents.yaml` → `evaluators` section
+- **Ask Copilot**: With the skills installed, ask Copilot CLI things like "how do I add a custom evaluator?" or "why am I getting 429 errors?"
