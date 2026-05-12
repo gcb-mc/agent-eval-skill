@@ -102,11 +102,15 @@ agent-eval-skill/
 ## 🏗️ Two-Phase Evaluation Pattern
 
 ```
-Phase 1: Call agents → save responses to JSONL     (slow, rate-limited, cached)
+Phase 1: Call agents → save responses to JSONL     (slow, rate-limited, resumable)
 Phase 2: Run evaluate() on saved JSONL → scores    (fast, deterministic, retryable)
 ```
 
-Phase 1 results are cached with a SHA-256 fingerprint of your agents + dataset. Re-runs skip agent calls unless something changed.
+Phase 1 results are saved incrementally to JSONL. Re-runs automatically resume from where they left off, skipping rows that already have responses.
+
+### Conditional Clarification
+
+For multi-agent pipelines with a clarification step, the evaluation automatically skips clarification for straightforward queries. Only edge cases that benefit from clarification (ambiguous queries, contradictory data, etc.) trigger the full pipeline. This saves API calls and better reflects real-world usage.
 
 ### 7 Built-In Evaluators
 
@@ -116,9 +120,9 @@ Phase 1 results are cached with a SHA-256 fingerprint of your agents + dataset. 
 | Relevance | Quality | 1–5 |
 | Coherence | Quality | 1–5 |
 | Fluency | Quality | 1–5 |
-| Similarity | Quality | 1–5 |
-| F1 Score | Accuracy | 0–1 |
-| Violence | Safety | 0–7 severity |
+| TaskAdherence | Agentic | 1–5 |
+| IntentResolution | Agentic | 1–5 |
+| ResponseCompleteness | Agentic | 1–5 |
 
 Toggle evaluators on/off in `agents.yaml` → `evaluators` section.
 

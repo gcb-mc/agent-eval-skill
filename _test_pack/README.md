@@ -1,18 +1,29 @@
-# Financial Agent Test Pack
+# 🧪 Test Data Toolkit
 
-This package contains **synthetic financial documents** created for testing document understanding agents.
+Generic tools for generating evaluation datasets from `agents.yaml`.
 
-## Included documents
-- `northwind_solar_q1_fy2026.pdf` — investor-style PDF update
-- `blueriver_retail_fy2025.docx` — board memo in Word
-- `cedar_health_services_q4_2025.xlsx` — workbook with metrics and notes
-- `financial_eval_dataset.csv` — tabular evaluation set
-- `financial_eval_dataset.jsonl` — JSONL evaluation set
+## Contents
 
-## Suggested use
-1. Feed each document to the summarizer agent.
-2. Use the clarification agent on the summaries.
-3. Validate answers to the general questions against the evaluation dataset.
+- `create_dataset.py` — Reads `agents.yaml` and generates role-appropriate test prompts
+- `eval_dataset_template.jsonl` — Template showing the expected JSONL format
 
-## Note
-All content is synthetic and intended only for testing.
+## Usage
+
+```bash
+python _test_pack/create_dataset.py
+python _test_pack/create_dataset.py --rows 10 --output my_tests.jsonl
+```
+
+## Domain-Specific Test Data
+
+For domain-specific test data (documents, pre-built datasets), see the example directories:
+
+- `examples/financial-agents/test_data/` — Financial documents and evaluation datasets
+- `examples/azure-vm-agents/` — Azure VM management test scenarios
+
+## Creating Your Own Test Data
+
+1. Fill in `agents.yaml` with your agent definitions
+2. Run `create_dataset.py` to generate a starter dataset
+3. Review and replace `[TODO]` entries with real expected answers
+4. Add domain-specific documents as needed

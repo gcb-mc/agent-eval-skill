@@ -18,7 +18,7 @@ The notebook runs a structured evaluation of three Foundry prompt agents against
 
 ### Test Data
 
-- **Source:** `_test_pack/financial_eval_dataset.csv` (also available as `.jsonl`)
+- **Source:** `examples/financial-agents/test_data/financial_eval_dataset.csv` (also available as `.jsonl`)
 - **24 Q&A pairs** across 3 documents, 8 questions per document
 - **Documents:** Northwind Solar (PDF), BlueRiver Retail (DOCX), Cedar Health Services (XLSX)
 - **Question categories:** Company name, reporting period, revenue, net income, operating expenses, operating margin, risks, outlook/guidance

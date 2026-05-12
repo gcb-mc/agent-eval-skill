@@ -108,7 +108,7 @@ The notebook will:
 
 ## 🔄 Re-running
 
-Phase 1 results are **cached** — if your agents and dataset haven't changed, re-runs skip the slow agent calls and jump straight to scoring. Change an agent name or modify the dataset and the cache invalidates automatically.
+Phase 1 results are **saved incrementally** — each response is written to the JSONL as it completes. If the notebook is interrupted, re-runs pick up where you left off. To force a full re-run, delete the output JSONL file.
 
 ---
 
@@ -134,7 +134,7 @@ These show the evaluation framework applied to real-world agent systems.
 | `429 rate limit errors` | Built-in retry logic handles most cases; increase `time.sleep()` in Phase 1 if persistent |
 | Agent calls return `[ERROR]` | Verify agent names match exactly what's in Foundry portal |
 | Content filter blocks evaluators | Use subtler test prompts (see `eval-troubleshooting` skill) |
-| Phase 1 not caching | Check that `eval_results/.cache_meta.json` fingerprint matches |
+| Phase 1 interrupted mid-run | Re-run the cell — it resumes from the last saved response |
 
 ---
 

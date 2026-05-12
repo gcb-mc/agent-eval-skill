@@ -33,6 +33,6 @@ jupyter notebook notebooks/starter_eval.ipynb  # run evaluation
 
 - Agent calls use `responses.create` + `agent_reference` (NOT `chat.completions.create`)
 - Evaluation uses two-phase approach: collect responses to JSONL, then run `evaluate()`
-- Phase 1 responses are cached with SHA-256 fingerprints
+- Phase 1 responses are saved incrementally to JSONL and resume automatically on re-run
 - All Azure interactions require `az login` and `DefaultAzureCredential`
 - Agent configuration lives in `agents.yaml`, not hardcoded in notebooks
