@@ -1,0 +1,35 @@
+# Environment and secrets
+.env
+.env.local
+.env.*
+!.env.template
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+
+# Evaluation outputs (may contain Azure resource details)
+eval_results*.csv
+pipeline_results.csv
+edge_case_results.csv
+eval_results_v4/
+*.png
+
+# Session artifacts
+session_summary_*.xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
