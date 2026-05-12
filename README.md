@@ -93,9 +93,10 @@ graph TD
     H --> I
     I --> J[Grounded Response]
 
-    style B fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333
-    style D fill:#bbf,stroke:#333
+    style B fill:#0072B2,stroke:#333,stroke-width:2px,color:#FFFFFF
+    style C fill:#009E73,stroke:#333,color:#FFFFFF
+    style D fill:#E69F00,stroke:#333,color:#000000
+
 ```
 
 ### Two-Phase Evaluation Pattern
