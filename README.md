@@ -34,6 +34,29 @@ pip install -r requirements.txt
 
 ---
 
+## 🎯 Bring Your Own Agents
+
+**New here?** See **[QUICKSTART.md](QUICKSTART.md)** for a step-by-step guide to using this repo with your own Foundry agents.
+
+Quick version:
+1. Clone → `pip install -r requirements.txt` → `az login`
+2. Copy `.env.template` → `.env` and fill in your values
+3. Open a notebook and look for `# ⬇️ CUSTOMIZE` markers in the config cell
+4. Replace example agent names with your Foundry-registered agent names
+5. Run!
+
+### Per-Notebook Requirements
+
+| Notebook | Env Vars Needed | Test Data |
+|----------|----------------|-----------|
+| `test_my_agents.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_SUBSCRIPTION_ID` | Built-in config |
+| `test_my_agents_v2.ipynb` | `AZURE_AI_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
+| `test_my_agents_v3.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_AI_EVAL_ENDPOINT` | `_test_pack/financial_eval_dataset.csv` |
+| `test_my_agents_v4.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_AI_EVAL_ENDPOINT` | `eval_dataset_v4.jsonl` |
+| `multi_agent_evaluation.ipynb` | `AZURE_AI_ENDPOINT`, `AZURE_SUBSCRIPTION_ID`, `AZURE_ACR_NAME` | None (live Azure APIs) |
+
+---
+
 ## 📦 Skills Included
 
 | Skill | Description |
